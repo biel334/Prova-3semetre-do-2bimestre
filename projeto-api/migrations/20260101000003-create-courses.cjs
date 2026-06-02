@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('courses', {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
