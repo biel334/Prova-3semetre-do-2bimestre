@@ -4,35 +4,48 @@
 
 Foi utilizado o PostgreSQL como banco de dados relacional (SQL).
 
-A escolha foi realizada devido ao suporte a integridade referencial, transações ACID, alta confiabilidade, compatibilidade com Sequelize ORM e ampla utilização em aplicações web.
+A escolha se justifica pelo suporte a integridade referencial, transações ACID,
+alta confiabilidade e ampla utilização em aplicações web de gestão de dados
+estruturados, como é o caso de um sistema escolar.
 
 ## Objetivo do Sistema
 
-O sistema tem como objetivo gerenciar alunos, cursos e matrículas, permitindo o cadastro de usuários, alunos, cursos e o relacionamento entre alunos e cursos.
+O sistema tem como objetivo gerenciar o cadastro de alunos, matérias e
+professores, além de registrar as notas e a frequência (presença) dos alunos
+em cada matéria.
 
 ## Entidades Principais
 
-* Users
-* Students
-* Courses
-* Student_Courses
+* Alunos
+* Matérias
+* Professores
+* Notas
+* Presenças
 
 ## Relacionamentos
 
-Um aluno pode estar matriculado em vários cursos.
+* Um professor leciona uma matéria (`professores.materia_id` → `materias.id`).
+* Um aluno pode ter várias notas, uma por matéria (`notas.aluno_id` →
+  `alunos.id`, `notas.materia_id` → `materias.id`).
+* Um aluno pode ter vários registros de presença, um por data de aula
+  (`presencas.aluno_id` → `alunos.id`).
 
-Um curso pode possuir vários alunos matriculados.
-
-Para representar essa relação N:N foi utilizada a tabela intermediária `student_courses`.
+Todos os relacionamentos do schema atual são do tipo 1:N (um aluno tem várias
+notas/presenças; uma matéria tem vários professores ou notas associadas). Não
+há, neste momento, relacionamento N:N no `escola.sql`.
 
 ## Volume de Dados
 
-Foram cadastrados mais de 200 registros de teste para validação de consultas e desempenho.
+Atualmente o banco possui 8 registros por tabela (alunos, matérias,
+professores, notas, presenças). **Atenção:** o critério da avaliação exige um
+mínimo de 100 registros relevantes para permitir análise de performance —
+use o script de seed adicional para popular o banco com mais dados antes da
+entrega.
 
 ## Principais Consultas
 
-* Listagem de alunos
-* Listagem de cursos
-* Matrículas por curso
-* Cursos de um aluno
-* Relatórios agregados de matrículas
+* Notas de cada aluno por matéria
+* Média de notas por matéria
+* Frequência (presença) por aluno
+* Professores e suas respectivas matérias
+* Alunos com média abaixo de um valor de corte
