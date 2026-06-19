@@ -6,11 +6,11 @@ import StudentCourseModel from '../app/models/StudentCourseModel.js';
 
 const connection = new Sequelize({
   dialect: 'postgres',
-  host: 'postgres-container',
-  username: 'postgres',
-  password: 'postgres',
-  database: 'api_rest_db',
-  port: 5432,
+  host: process.env.DB_HOST,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
   define: { timestamps: true }
 });
 
