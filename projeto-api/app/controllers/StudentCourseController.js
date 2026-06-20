@@ -17,6 +17,15 @@ class StudentCourseController {
     });
     return res.json(students);
   }
+
+  async delete(req, res) {
+    const { student_id, course_id } = req.body;
+    const student = await StudentModel.findByPk(student_id);
+    const course = await CourseModel.findByPk(course_id);
+    if (!student || !course) return res.status(404).json({ error: 'Aluno ou curso não encontrado' });
+    await student.removeCourse(course);
+    return res.json({ message: 'Vínculo removido com sucesso' });
+  }
 }
 
 export default new StudentCourseController();

@@ -38,12 +38,16 @@ const routes = Router();
  */
 routes.post('/login', LoginController.login);
 
+routes.use(AuthMiddleware);
+
 /**
  * @swagger
  * /users:
  *   post:
  *     summary: Cria um novo usuário
  *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -64,10 +68,10 @@ routes.post('/login', LoginController.login);
  *     responses:
  *       200:
  *         description: Usuário criado com sucesso
+ *       401:
+ *         description: Token inválido ou não informado
  */
 routes.post('/users', UserController.store);
-
-routes.use(AuthMiddleware);
 
 /**
  * @swagger
@@ -457,5 +461,37 @@ routes.post('/student-courses', StudentCourseController.store);
  *         description: Token inválido ou não informado
  */
 routes.get('/student-courses', StudentCourseController.index);
+
+/**
+ * @swagger
+ * /student-courses:
+ *   delete:
+ *     summary: Remove o vínculo entre um aluno e um curso
+ *     tags: [StudentCourses]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [student_id, course_id]
+ *             properties:
+ *               student_id:
+ *                 type: integer
+ *                 example: 1
+ *               course_id:
+ *                 type: integer
+ *                 example: 1
+ *     responses:
+ *       200:
+ *         description: Vínculo removido com sucesso
+ *       404:
+ *         description: Aluno ou curso não encontrado
+ *       401:
+ *         description: Token inválido ou não informado
+ */
+routes.delete('/student-courses', StudentCourseController.delete);
 
 export default routes;

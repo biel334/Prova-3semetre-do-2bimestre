@@ -25,8 +25,20 @@ if (command === 'migrate') {
     console.error(err.stderr?.toString() || err.message);
     process.exit(1);
   }
+} else if (command === 'seed') {
+  console.log('Executando seeders...');
+  try {
+    const output = execSync('npx sequelize-cli db:seed:all', { stdio: 'pipe' });
+    console.log(output.toString());
+    console.log('Seeders executados com sucesso!');
+  } catch (err) {
+    console.error('Erro ao executar seeders:');
+    console.error(err.stderr?.toString() || err.message);
+    process.exit(1);
+  }
 } else {
   console.log('Comandos disponíveis:');
   console.log('  node command.js migrate        - Executa todas as migrations');
   console.log('  node command.js migrate:undo   - Reverte a última migration');
+  console.log('  node command.js seed           - Cria o usuário admin inicial');
 }
