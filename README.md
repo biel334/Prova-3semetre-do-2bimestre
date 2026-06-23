@@ -1,6 +1,22 @@
-# Sistema Escolar — API REST (Prova 2º Bimestre)
+# Sistema Escolar — API REST (Desenvolvimento Web, 2º Bimestre)
 
 Aplicação backend (sem frontend) que fornece APIs REST para gestão de um sistema escolar: alunos, matérias, professores, notas (vínculo aluno-matéria, relação N:N) e presenças. O banco de dados é o mesmo modelado e documentado na disciplina de Banco de Dados (pasta `banco-de-dados/`).
+
+## Como abrir o projeto (clone + navegação de pastas)
+
+```bash
+git clone <url-do-repositorio>
+cd Prova-3semetre-2bimestre--main   # entra na raiz do repositório (onde está este README)
+cd projeto-api                       # entra na pasta da API (onde está o docker-compose.yml)
+```
+
+A partir daqui, todos os comandos abaixo (`docker compose ...`, `node command.js ...`) devem ser executados **dentro da pasta `projeto-api/`**.
+
+Se quiser conferir a entrega de Banco de Dados, volte para a raiz e entre na outra pasta:
+```bash
+cd ..
+cd banco-de-dados
+```
 
 ## Containers utilizados
 
