@@ -1,10 +1,12 @@
 import { Router } from 'express';
 
-import UserController from '../controllers/UserController.js';
-import StudentController from '../controllers/StudentController.js';
-import CourseController from '../controllers/CourseController.js';
+import UsuarioController from '../controllers/UsuarioController.js';
+import AlunoController from '../controllers/AlunoController.js';
+import MateriaController from '../controllers/MateriaController.js';
+import ProfessorController from '../controllers/ProfessorController.js';
+import NotaController from '../controllers/NotaController.js';
+import PresencaController from '../controllers/PresencaController.js';
 import LoginController from '../controllers/LoginController.js';
-import StudentCourseController from '../controllers/StudentCourseController.js';
 
 import AuthMiddleware from '../middlewares/AuthMiddleware.js';
 
@@ -22,12 +24,12 @@ const routes = Router();
  *         application/json:
  *           schema:
  *             type: object
- *             required: [email, password]
+ *             required: [email, senha]
  *             properties:
  *               email:
  *                 type: string
- *                 example: gabriel@email.com
- *               password:
+ *                 example: admin@email.com
+ *               senha:
  *                 type: string
  *                 example: "123456"
  *     responses:
@@ -40,458 +42,465 @@ routes.post('/login', LoginController.login);
 
 routes.use(AuthMiddleware);
 
-/**
- * @swagger
- * /users:
- *   post:
- *     summary: Cria um novo usuário
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required: [name, email, password]
- *             properties:
- *               name:
- *                 type: string
- *                 example: Gabriel
- *               email:
- *                 type: string
- *                 example: gabriel@email.com
- *               password:
- *                 type: string
- *                 example: "123456"
- *     responses:
- *       200:
- *         description: Usuário criado com sucesso
- *       401:
- *         description: Token inválido ou não informado
- */
-routes.post('/users', UserController.store);
+/* ===================== USUARIOS ===================== */
 
 /**
  * @swagger
- * /users:
+ * /usuarios:
  *   get:
  *     summary: Lista todos os usuários
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
+ *     tags: [Usuarios]
+ *     security: [{ bearerAuth: [] }]
  *     responses:
- *       200:
- *         description: Lista de usuários
- *       401:
- *         description: Token inválido ou não informado
+ *       200: { description: Lista de usuários }
+ *       401: { description: Token inválido ou não informado }
+ *   post:
+ *     summary: Cria um novo usuário
+ *     tags: [Usuarios]
+ *     security: [{ bearerAuth: [] }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [nome, email, senha]
+ *             properties:
+ *               nome: { type: string, example: Gabriel }
+ *               email: { type: string, example: gabriel@email.com }
+ *               senha: { type: string, example: "123456" }
+ *     responses:
+ *       200: { description: Usuário criado com sucesso }
+ *       401: { description: Token inválido ou não informado }
  */
-routes.get('/users', UserController.index);
+routes.get('/usuarios', UsuarioController.index);
+routes.post('/usuarios', UsuarioController.store);
 
 /**
  * @swagger
- * /users/{id}:
+ * /usuarios/{id}:
  *   get:
  *     summary: Busca usuário por ID
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
+ *     tags: [Usuarios]
+ *     security: [{ bearerAuth: [] }]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         schema:
- *           type: integer
+ *         schema: { type: integer }
  *     responses:
- *       200:
- *         description: Usuário encontrado
- *       401:
- *         description: Token inválido ou não informado
- */
-routes.get('/users/:id', UserController.show);
-
-/**
- * @swagger
- * /users/{id}:
+ *       200: { description: Usuário encontrado }
  *   put:
  *     summary: Atualiza usuário
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
+ *     tags: [Usuarios]
+ *     security: [{ bearerAuth: [] }]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         schema:
- *           type: integer
+ *         schema: { type: integer }
  *     requestBody:
- *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
  *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
+ *               nome: { type: string }
+ *               email: { type: string }
+ *               senha: { type: string }
  *     responses:
- *       200:
- *         description: Usuário atualizado
- *       401:
- *         description: Token inválido ou não informado
- */
-routes.put('/users/:id', UserController.update);
-
-/**
- * @swagger
- * /users/{id}:
+ *       200: { description: Usuário atualizado }
  *   delete:
  *     summary: Remove usuário
- *     tags: [Users]
- *     security:
- *       - bearerAuth: []
+ *     tags: [Usuarios]
+ *     security: [{ bearerAuth: [] }]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         schema:
- *           type: integer
+ *         schema: { type: integer }
  *     responses:
- *       200:
- *         description: Usuário removido
- *       401:
- *         description: Token inválido ou não informado
+ *       200: { description: Usuário removido }
  */
-routes.delete('/users/:id', UserController.delete);
+routes.get('/usuarios/:id', UsuarioController.show);
+routes.put('/usuarios/:id', UsuarioController.update);
+routes.delete('/usuarios/:id', UsuarioController.delete);
+
+/* ===================== ALUNOS ===================== */
 
 /**
  * @swagger
- * /students:
+ * /alunos:
  *   get:
  *     summary: Lista todos os alunos
- *     tags: [Students]
- *     security:
- *       - bearerAuth: []
+ *     tags: [Alunos]
+ *     security: [{ bearerAuth: [] }]
  *     responses:
- *       200:
- *         description: Lista de alunos
- *       401:
- *         description: Token inválido ou não informado
- */
-routes.get('/students', StudentController.index);
-
-/**
- * @swagger
- * /students/{id}:
- *   get:
- *     summary: Busca aluno por ID
- *     tags: [Students]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Aluno encontrado
- *       401:
- *         description: Token inválido ou não informado
- */
-routes.get('/students/:id', StudentController.show);
-
-/**
- * @swagger
- * /students:
+ *       200: { description: Lista de alunos }
  *   post:
  *     summary: Cria um novo aluno
- *     tags: [Students]
- *     security:
- *       - bearerAuth: []
+ *     tags: [Alunos]
+ *     security: [{ bearerAuth: [] }]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required: [name, email]
+ *             required: [nome]
  *             properties:
- *               name:
- *                 type: string
- *                 example: João Silva
- *               email:
- *                 type: string
- *                 example: joao@email.com
+ *               nome: { type: string, example: João Silva }
+ *               email: { type: string, example: joao@email.com }
+ *               curso: { type: string, example: Informática }
  *     responses:
- *       200:
- *         description: Aluno criado
- *       401:
- *         description: Token inválido ou não informado
+ *       200: { description: Aluno criado }
  */
-routes.post('/students', StudentController.store);
+routes.get('/alunos', AlunoController.index);
+routes.post('/alunos', AlunoController.store);
 
 /**
  * @swagger
- * /students/{id}:
+ * /alunos/{id}:
+ *   get:
+ *     summary: Busca aluno por ID
+ *     tags: [Alunos]
+ *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Aluno encontrado }
  *   put:
  *     summary: Atualiza aluno
- *     tags: [Students]
- *     security:
- *       - bearerAuth: []
+ *     tags: [Alunos]
+ *     security: [{ bearerAuth: [] }]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         schema:
- *           type: integer
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               email:
- *                 type: string
+ *         schema: { type: integer }
  *     responses:
- *       200:
- *         description: Aluno atualizado
- *       401:
- *         description: Token inválido ou não informado
- */
-routes.put('/students/:id', StudentController.update);
-
-/**
- * @swagger
- * /students/{id}:
+ *       200: { description: Aluno atualizado }
  *   delete:
  *     summary: Remove aluno
- *     tags: [Students]
- *     security:
- *       - bearerAuth: []
+ *     tags: [Alunos]
+ *     security: [{ bearerAuth: [] }]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         schema:
- *           type: integer
+ *         schema: { type: integer }
  *     responses:
- *       200:
- *         description: Aluno removido
- *       401:
- *         description: Token inválido ou não informado
+ *       200: { description: Aluno removido }
  */
-routes.delete('/students/:id', StudentController.delete);
+routes.get('/alunos/:id', AlunoController.show);
+routes.put('/alunos/:id', AlunoController.update);
+routes.delete('/alunos/:id', AlunoController.delete);
+
+/* ===================== MATERIAS ===================== */
 
 /**
  * @swagger
- * /courses:
+ * /materias:
  *   get:
- *     summary: Lista todos os cursos
- *     tags: [Courses]
- *     security:
- *       - bearerAuth: []
+ *     summary: Lista todas as matérias
+ *     tags: [Materias]
+ *     security: [{ bearerAuth: [] }]
  *     responses:
- *       200:
- *         description: Lista de cursos
- *       401:
- *         description: Token inválido ou não informado
- */
-routes.get('/courses', CourseController.index);
-
-/**
- * @swagger
- * /courses/{id}:
- *   get:
- *     summary: Busca curso por ID
- *     tags: [Courses]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Curso encontrado
- *       401:
- *         description: Token inválido ou não informado
- */
-routes.get('/courses/:id', CourseController.show);
-
-/**
- * @swagger
- * /courses:
+ *       200: { description: Lista de matérias }
  *   post:
- *     summary: Cria um novo curso
- *     tags: [Courses]
- *     security:
- *       - bearerAuth: []
+ *     summary: Cria uma nova matéria
+ *     tags: [Materias]
+ *     security: [{ bearerAuth: [] }]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required: [title, description]
+ *             required: [nome]
  *             properties:
- *               title:
- *                 type: string
- *                 example: Desenvolvimento Web
- *               description:
- *                 type: string
- *                 example: Curso completo de desenvolvimento web
+ *               nome: { type: string, example: Matemática }
  *     responses:
- *       200:
- *         description: Curso criado
- *       401:
- *         description: Token inválido ou não informado
+ *       200: { description: Matéria criada }
  */
-routes.post('/courses', CourseController.store);
+routes.get('/materias', MateriaController.index);
+routes.post('/materias', MateriaController.store);
 
 /**
  * @swagger
- * /courses/{id}:
+ * /materias/{id}:
+ *   get:
+ *     summary: Busca matéria por ID
+ *     tags: [Materias]
+ *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Matéria encontrada }
  *   put:
- *     summary: Atualiza curso
- *     tags: [Courses]
- *     security:
- *       - bearerAuth: []
+ *     summary: Atualiza matéria
+ *     tags: [Materias]
+ *     security: [{ bearerAuth: [] }]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         schema:
- *           type: integer
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *               description:
- *                 type: string
+ *         schema: { type: integer }
  *     responses:
- *       200:
- *         description: Curso atualizado
- *       401:
- *         description: Token inválido ou não informado
- */
-routes.put('/courses/:id', CourseController.update);
-
-/**
- * @swagger
- * /courses/{id}:
+ *       200: { description: Matéria atualizada }
  *   delete:
- *     summary: Remove curso
- *     tags: [Courses]
- *     security:
- *       - bearerAuth: []
+ *     summary: Remove matéria
+ *     tags: [Materias]
+ *     security: [{ bearerAuth: [] }]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         schema:
- *           type: integer
+ *         schema: { type: integer }
  *     responses:
- *       200:
- *         description: Curso removido
- *       401:
- *         description: Token inválido ou não informado
+ *       200: { description: Matéria removida }
  */
-routes.delete('/courses/:id', CourseController.delete);
+routes.get('/materias/:id', MateriaController.show);
+routes.put('/materias/:id', MateriaController.update);
+routes.delete('/materias/:id', MateriaController.delete);
+
+/* ===================== PROFESSORES ===================== */
 
 /**
  * @swagger
- * /student-courses:
- *   post:
- *     summary: Vincula um aluno a um curso
- *     tags: [StudentCourses]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required: [student_id, course_id]
- *             properties:
- *               student_id:
- *                 type: integer
- *                 example: 1
- *               course_id:
- *                 type: integer
- *                 example: 1
- *     responses:
- *       200:
- *         description: Curso vinculado ao aluno
- *       404:
- *         description: Aluno ou curso não encontrado
- *       401:
- *         description: Token inválido ou não informado
- */
-routes.post('/student-courses', StudentCourseController.store);
-
-/**
- * @swagger
- * /student-courses:
+ * /professores:
  *   get:
- *     summary: Lista alunos com seus cursos
- *     tags: [StudentCourses]
- *     security:
- *       - bearerAuth: []
+ *     summary: Lista todos os professores
+ *     tags: [Professores]
+ *     security: [{ bearerAuth: [] }]
  *     responses:
- *       200:
- *         description: Lista de alunos com cursos vinculados
- *       401:
- *         description: Token inválido ou não informado
- */
-routes.get('/student-courses', StudentCourseController.index);
-
-/**
- * @swagger
- * /student-courses:
- *   delete:
- *     summary: Remove o vínculo entre um aluno e um curso
- *     tags: [StudentCourses]
- *     security:
- *       - bearerAuth: []
+ *       200: { description: Lista de professores }
+ *   post:
+ *     summary: Cria um novo professor
+ *     tags: [Professores]
+ *     security: [{ bearerAuth: [] }]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required: [student_id, course_id]
+ *             required: [nome]
  *             properties:
- *               student_id:
- *                 type: integer
- *                 example: 1
- *               course_id:
- *                 type: integer
- *                 example: 1
+ *               nome: { type: string, example: Carlos Silva }
+ *               email: { type: string, example: carlos@escola.com }
+ *               materia_id: { type: integer, example: 1 }
  *     responses:
- *       200:
- *         description: Vínculo removido com sucesso
- *       404:
- *         description: Aluno ou curso não encontrado
- *       401:
- *         description: Token inválido ou não informado
+ *       200: { description: Professor criado }
  */
-routes.delete('/student-courses', StudentCourseController.delete);
+routes.get('/professores', ProfessorController.index);
+routes.post('/professores', ProfessorController.store);
+
+/**
+ * @swagger
+ * /professores/{id}:
+ *   get:
+ *     summary: Busca professor por ID
+ *     tags: [Professores]
+ *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Professor encontrado }
+ *   put:
+ *     summary: Atualiza professor
+ *     tags: [Professores]
+ *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Professor atualizado }
+ *   delete:
+ *     summary: Remove professor
+ *     tags: [Professores]
+ *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Professor removido }
+ */
+routes.get('/professores/:id', ProfessorController.show);
+routes.put('/professores/:id', ProfessorController.update);
+routes.delete('/professores/:id', ProfessorController.delete);
+
+/* ===================== PRESENCAS ===================== */
+
+/**
+ * @swagger
+ * /presencas:
+ *   get:
+ *     summary: Lista todas as presenças
+ *     tags: [Presencas]
+ *     security: [{ bearerAuth: [] }]
+ *     responses:
+ *       200: { description: Lista de presenças }
+ *   post:
+ *     summary: Registra uma presença
+ *     tags: [Presencas]
+ *     security: [{ bearerAuth: [] }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [aluno_id, data_aula, presente]
+ *             properties:
+ *               aluno_id: { type: integer, example: 1 }
+ *               data_aula: { type: string, example: "2026-06-16" }
+ *               presente: { type: boolean, example: true }
+ *     responses:
+ *       200: { description: Presença registrada }
+ */
+routes.get('/presencas', PresencaController.index);
+routes.post('/presencas', PresencaController.store);
+
+/**
+ * @swagger
+ * /presencas/{id}:
+ *   get:
+ *     summary: Busca presença por ID
+ *     tags: [Presencas]
+ *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Presença encontrada }
+ *   put:
+ *     summary: Atualiza presença
+ *     tags: [Presencas]
+ *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Presença atualizada }
+ *   delete:
+ *     summary: Remove presença
+ *     tags: [Presencas]
+ *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Presença removida }
+ */
+routes.get('/presencas/:id', PresencaController.show);
+routes.put('/presencas/:id', PresencaController.update);
+routes.delete('/presencas/:id', PresencaController.delete);
+
+/* ===================== NOTAS (pivô N:N aluno<->materia) ===================== */
+
+/**
+ * @swagger
+ * /notas:
+ *   get:
+ *     summary: Lista todas as notas (vínculos aluno-matéria)
+ *     tags: [Notas]
+ *     security: [{ bearerAuth: [] }]
+ *     responses:
+ *       200: { description: Lista de notas }
+ *   post:
+ *     summary: Lança uma nota vinculando aluno e matéria
+ *     tags: [Notas]
+ *     security: [{ bearerAuth: [] }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [aluno_id, materia_id, nota]
+ *             properties:
+ *               aluno_id: { type: integer, example: 1 }
+ *               materia_id: { type: integer, example: 1 }
+ *               nota: { type: number, example: 9.5 }
+ *     responses:
+ *       200: { description: Nota lançada com sucesso }
+ *       404: { description: Aluno ou matéria não encontrado }
+ */
+routes.get('/notas', NotaController.index);
+routes.post('/notas', NotaController.store);
+
+/**
+ * @swagger
+ * /notas/{id}:
+ *   get:
+ *     summary: Busca nota por ID
+ *     tags: [Notas]
+ *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Nota encontrada }
+ *   put:
+ *     summary: Atualiza uma nota
+ *     tags: [Notas]
+ *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Nota atualizada }
+ *   delete:
+ *     summary: Remove o vínculo de nota entre aluno e matéria
+ *     tags: [Notas]
+ *     security: [{ bearerAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: integer }
+ *     responses:
+ *       200: { description: Nota removida }
+ *       404: { description: Nota não encontrada }
+ */
+routes.get('/notas/:id', NotaController.show);
+routes.put('/notas/:id', NotaController.update);
+routes.delete('/notas/:id', NotaController.delete);
+
+/**
+ * @swagger
+ * /alunos-materias:
+ *   get:
+ *     summary: Lista alunos com as matérias vinculadas (visão da relação N:N)
+ *     tags: [Notas]
+ *     security: [{ bearerAuth: [] }]
+ *     responses:
+ *       200: { description: Lista de alunos com suas matérias e notas }
+ */
+routes.get('/alunos-materias', NotaController.alunosComMaterias);
 
 export default routes;

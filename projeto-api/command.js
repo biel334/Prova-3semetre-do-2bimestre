@@ -26,7 +26,7 @@ if (command === 'migrate') {
     process.exit(1);
   }
 } else if (command === 'seed') {
-  console.log('Executando seeders...');
+  console.log('Executando seeders (usuário admin + dados da escola)...');
   try {
     const output = execSync('npx sequelize-cli db:seed:all', { stdio: 'pipe' });
     console.log(output.toString());

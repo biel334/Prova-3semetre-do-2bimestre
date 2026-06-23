@@ -1,8 +1,10 @@
 import Sequelize from 'sequelize';
-import UserModel from '../app/models/UserModel.js';
-import StudentModel from '../app/models/StudentModel.js';
-import CourseModel from '../app/models/CourseModel.js';
-import StudentCourseModel from '../app/models/StudentCourseModel.js';
+import UsuarioModel from '../app/models/UsuarioModel.js';
+import AlunoModel from '../app/models/AlunoModel.js';
+import MateriaModel from '../app/models/MateriaModel.js';
+import ProfessorModel from '../app/models/ProfessorModel.js';
+import NotaModel from '../app/models/NotaModel.js';
+import PresencaModel from '../app/models/PresencaModel.js';
 
 const connection = new Sequelize({
   dialect: 'postgres',
@@ -14,12 +16,19 @@ const connection = new Sequelize({
   define: { timestamps: true }
 });
 
-UserModel.init(connection);
-StudentModel.init(connection);
-CourseModel.init(connection);
-StudentCourseModel.init(connection);
+UsuarioModel.init(connection);
+AlunoModel.init(connection);
+MateriaModel.init(connection);
+ProfessorModel.init(connection);
+NotaModel.init(connection);
+PresencaModel.init(connection);
 
-StudentModel.associate({ CourseModel, StudentCourseModel });
-CourseModel.associate({ StudentModel, StudentCourseModel });
+const models = { AlunoModel, MateriaModel, ProfessorModel, NotaModel, PresencaModel };
+
+AlunoModel.associate(models);
+MateriaModel.associate(models);
+ProfessorModel.associate(models);
+NotaModel.associate(models);
+PresencaModel.associate(models);
 
 export default connection;
