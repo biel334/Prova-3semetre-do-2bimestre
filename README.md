@@ -30,6 +30,23 @@ Arquitetura: `Host -> Nginx -> Node Web Server -> PostgreSQL`
 
 O servidor Node.js **não** tem porta publicada no host. Todo acesso externo passa obrigatoriamente pelo Nginx, na porta `8080`.
 
+## 2. (Opcional) Instalar dependências localmente
+
+> Esse passo não é obrigatório para rodar via Docker — o `npm ci` já acontece
+> automaticamente dentro do container durante o build. Use isso apenas se
+> quiser rodar o projeto fora do Docker ou para o seu editor reconhecer os
+> tipos/autocomplete do `node_modules`.
+
+**Linux/macOS (bash):**
+bash
+npm install
+```
+
+**Windows (PowerShell):**
+powershell
+  npm install
+```
+
 ## Pré-requisitos
 
 - Docker e Docker Compose instalados
@@ -44,7 +61,24 @@ Copy-Item projeto-api\.env.example projeto-api\.env
 ```bash
 cp projeto-api/.env.example projeto-api/.env
 ```
+O arquivo `.env.example` já vem com valores compatíveis com o `docker-compose.yml`:
 
+```env
+DB_USER=postgres
+DB_PASSWORD=troque_esta_senha
+DB_NAME=escola_db
+DB_HOST=postgres-container
+DB_PORT=5432
+
+JWT_SECRET=troque_este_segredo_jwt
+
+NODE_ENV=production
+PORT=3000
+```
+
+> ⚠️ Se você alterar o `DB_PASSWORD` no `.env`, lembre de alterar também o
+> `POSTGRES_PASSWORD` do serviço `db` no `docker-compose.yml` — os dois
+> valores precisam ser idênticos.
 (edite `JWT_SECRET` e as credenciais do banco se quiser usar valores próprios)
 
 ## Como executar o projeto
@@ -63,6 +97,12 @@ A API ficará disponível em `http://localhost:8080`.
 ```bash
 docker compose exec node-container node command.js migrate
 ```
+# Rodar migrations
+docker compose run --rm node-container npx sequelize-cli db:migrate
+
+# Rodar seeders
+docker compose run --rm node-container npx sequelize-cli db:seed:all
+
 
 Para reverter a última migration:
 ```bash
