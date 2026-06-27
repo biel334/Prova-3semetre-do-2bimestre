@@ -87,6 +87,11 @@ PORT=3000
 cd projeto-api
 docker compose up --build
 ```
+E sempre que entra num terminal novo nao esquece de coloca o 
+```bash
+cd projeto-api
+```
+
 
 (esse comando é igual em PowerShell e bash)
 
