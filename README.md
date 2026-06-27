@@ -92,6 +92,47 @@ docker compose up --build
 
 A API ficará disponível em `http://localhost:8080`.
 
+## Evidências de Funcionamento e Verificação
+
+Para validar o ambiente, o avaliador pode executar os seguintes comandos:
+
+### Verificar containers ativos
+```bash
+docker ps
+```
+
+### Verificar a rede e a resolução DNS interna entre os serviços
+```bash
+docker network inspect projeto-api_app-network
+```
+
+### Provar resolução de nome de serviço (DNS interno, sem IP fixo)
+```bash
+docker exec -it nginx-container ping -c 3 node-container
+docker exec -it node-container ping -c 3 postgres-container
+```
+
+### Verificar persistência de dados (Named Volumes)
+```bash
+docker volume ls
+docker inspect projeto-api_db-data
+```
+
+### Verificar que o banco de dados não está exposto à internet
+```bash
+docker port postgres-container
+```
+(Não deve retornar nenhuma porta publicada — o banco só é acessível pela rede interna `app-network`.)
+
+### Verificar logs do build/pipeline
+```bash
+docker-compose logs --tail=50
+```
+
+### URL de acesso à aplicação
+- Aplicação: http://localhost:8080
+- Documentação Swagger: http://localhost:8080/api-docs
+
 ## Como executar as migrations
 
 ```bash
